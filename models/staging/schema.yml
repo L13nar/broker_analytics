@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  # ========== TRADES ==========
+  - name: stg_trades
+    columns:
+      - name: trade_id
+        tests: [not_null, unique]
+      - name: account_id
+        tests: 
+          - not_null
+          - relationships:          
+              to: ref('stg_accounts')
+              field: account_id
+      - name: side
+        tests:
+          - accepted_values:
+              values: ['BUY','SELL']
+      - name: quote_currency
+        tests: [not_null]
+      - name: platform_symbol
+        tests: [not_null]
+      - name: open_time
+        tests: [not_null]
+      - name: status
+        tests: [not_null]
+  # ========== ACCOUNTS ==========
+  - name: stg_accounts
+    columns:
+      - name: account_id
+        tests: [not_null, unique]
+      - name: client_id
+        tests:
+          - relationships:
+              to: ref('stg_clients')
+              field: client_id
+      - name: is_system
+        tests: [not_null]
+      - name: is_deleted
+        tests: [not_null]
+      - name: platform
+        tests: [not_null]
+      - name: base_currency
+        tests: [not_null]
+  # ========== CLIENTS ==========
+  - name: stg_clients
+    columns:
+      - name: client_id
+        tests: [not_null, unique]
+      - name: segment
+        tests:
+          - accepted_values:
+              values: ['RETAIL','PRO','VIP']   
+      - name: client_external_id
+        tests: [not_null, unique]
+  # ========== SYMBOLS ==========
+  - name: stg_symbols
+    columns:
+      - name: platform
+        tests: [not_null]
+      - name: platform_symbol
+        tests: [not_null]
+      - name: std_symbol
+        tests: [not_null]
+      - name: asset_class
+        tests: [not_null]
+  # ========== BALANCES EOD ==========
+  - name: stg_balances_eod
+    columns:
+      - name: account_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_accounts')
+              field: account_id
+

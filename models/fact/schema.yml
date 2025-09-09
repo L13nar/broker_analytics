@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  # ========== TRADES ==========
+  - name: fact_trades
+    columns:
+      - name: trade_id
+        tests: [not_null, unique]
+      - name: account_id
+        tests: 
+          - not_null
+          - relationships:          
+              to: ref('dim_accounts')
+              field: account_id
+      - name: client_id
+        tests: 
+          - not_null
+          - relationships:          
+              to: ref('dim_clients')
+              field: client_id
+      - name: side
+        tests:
+          - accepted_values:
+              values: ['BUY','SELL']
+      - name: quote_currency
+        tests: [not_null]
+      - name: symbol
+        tests: [not_null]
+      - name: open_time
+        tests: [not_null]
+      - name: status
+        tests: [not_null]
+
+
+  
